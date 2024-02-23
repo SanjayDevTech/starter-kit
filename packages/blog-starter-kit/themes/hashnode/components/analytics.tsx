@@ -7,6 +7,12 @@ const GA_TRACKING_ID = 'G-72XG3F8LNJ'; // This is Hashnode's GA tracking ID
 const isProd = process.env.NEXT_PUBLIC_MODE === 'production';
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_URL || '';
 
+declare global {
+	interface Window {
+		gtag: any;
+	}
+}
+
 export const Analytics = () => {
 	const { publication, post } = useAppContext();
 
@@ -21,6 +27,7 @@ export const Analytics = () => {
 	if (!isProd) return null;
 
 	const _sendPageViewsToHashnodeGoogleAnalytics = () => {
+		if (!window.gtag) return;
 		// @ts-ignore
 		window.gtag('config', GA_TRACKING_ID, {
 			transport_url: 'https://ping.hashnode.com',
