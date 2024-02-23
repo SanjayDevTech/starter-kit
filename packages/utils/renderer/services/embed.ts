@@ -169,6 +169,15 @@ export const triggerEmbed = async (node?: Element | undefined) => {
 	parentNode.innerHTML = '';
 	parentNode.appendChild(gistFrame);
 
+	const adjustIframeSize = (id: string, height: number) => {
+		const iframe = document.getElementById(id);
+		if (!iframe) return;
+		iframe.style.height = `${height}px`;
+	}
+
+	// @ts-ignore
+	window.adjustIframeSize = adjustIframeSize;
+
 	// Create the iframe's document
 	const gistFrameHTML = `<html><body onload="parent.adjustIframeSize('${gistFrame.id}', document.body.scrollHeight)">${data.html}</body></html>`;
 
