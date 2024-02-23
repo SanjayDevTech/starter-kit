@@ -17,6 +17,7 @@ import {
 	RequiredPublicationFieldsFragment,
 	User,
 } from '../generated/graphql';
+import { Button } from './custom-button';
 import PublicationLogo from './publication-logo';
 
 type Props = {
@@ -76,6 +77,7 @@ const PostPageNavbar = forwardRef<HTMLElement, Props>((props, ref) => {
 					)}
 				>
 					<HeaderBlogSearch publication={publication} />
+					<Button as="a" href="#" type="primary" label="Sign up" />
 				</div>
 			</div>
 
