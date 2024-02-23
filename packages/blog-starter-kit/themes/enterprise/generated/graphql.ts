@@ -360,6 +360,8 @@ export type Draft = Node & {
   /** OG meta-data of the draft. Contains image url used in open graph meta tags. */
   ogMetaData?: Maybe<OpenGraphMetaData>;
   readTimeInMinutes: Scalars['Int']['output'];
+  /** The date the draft is scheduled to be published. */
+  scheduledDate?: Maybe<Scalars['DateTime']['output']>;
   /** SEO information of the draft. Contains title and description used in meta tags. */
   seo?: Maybe<Seo>;
   /** Information of the series the draft belongs to. */
@@ -368,8 +370,12 @@ export type Draft = Node & {
   slug: Scalars['String']['output'];
   /** The subtitle of the draft. It would become the subtitle of the post when published. */
   subtitle?: Maybe<Scalars['String']['output']>;
-  /** Returns list of tags added to the draft. Contains tag id, name, slug, etc. */
+  /**
+   * Returns list of tags added to the draft. Contains tag id, name, slug, etc.
+   * @deprecated Use tagsV2 instead. Will be removed on 26/02/2024.
+   */
   tags: Array<Tag>;
+  tagsV2: Array<DraftTag>;
   /** The title of the draft. It would become the title of the post when published. */
   title?: Maybe<Scalars['String']['output']>;
   updatedAt: Scalars['DateTime']['output'];
@@ -381,6 +387,18 @@ export type DraftBackup = {
   at?: Maybe<Scalars['DateTime']['output']>;
   /** The status of the backup i.e., success or failure. */
   status?: Maybe<BackupStatus>;
+};
+
+/**
+ * Contains basic information about a Tag within a Draft.
+ * A tag in a draft is a tag that is not published yet.
+ */
+export type DraftBaseTag = {
+  __typename?: 'DraftBaseTag';
+  /** The name of the tag. Shown in tag page. */
+  name: Scalars['String']['output'];
+  /** The slug of the tag. Used to access tags feed.  Example https://hashnode.com/n/graphql */
+  slug: Scalars['String']['output'];
 };
 
 /**
@@ -433,6 +451,8 @@ export type DraftSettings = {
   /** A flag to indicate if the cover image is shown below title of the post. Default position of cover is top of title. */
   stickCoverToBottom: Scalars['Boolean']['output'];
 };
+
+export type DraftTag = DraftBaseTag | Tag;
 
 /**
  * An edge that contains a node and cursor to the node.
@@ -706,6 +726,8 @@ export type Mutation = {
   /** Reschedule a draft. */
   rescheduleDraft: RescheduleDraftPayload;
   resendWebhookRequest: ResendWebhookRequestPayload;
+  /** Restores a deleted post. */
+  restorePost: RestorePostPayload;
   scheduleDraft: ScheduleDraftPayload;
   subscribeToNewsletter: SubscribeToNewsletterPayload;
   /**
@@ -811,6 +833,11 @@ export type MutationResendWebhookRequestArgs = {
 };
 
 
+export type MutationRestorePostArgs = {
+  input: RestorePostInput;
+};
+
+
 export type MutationScheduleDraftArgs = {
   input: ScheduleDraftInput;
 };
@@ -879,8 +906,6 @@ export type MyUser = IUser & Node & {
   dateJoined?: Maybe<Scalars['DateTime']['output']>;
   /** Whether or not the user is deactivated. */
   deactivated: Scalars['Boolean']['output'];
-  /** Email address of the user. Only available to the authenticated user. */
-  email?: Maybe<Scalars['String']['output']>;
   /** The users who are following this user */
   followers: UserConnection;
   /** The number of users that follow the requested user. Visible in the user's profile. */
@@ -908,8 +933,6 @@ export type MyUser = IUser & Node & {
   tagline?: Maybe<Scalars['String']['output']>;
   /** Returns a list of tags that the user follows. */
   tagsFollowing: Array<Tag>;
-  /** Hashnode users are subscribed to a newsletter by default. This field can be used to unsubscribe from the newsletter. Only available to the authenticated user. */
-  unsubscribeCode?: Maybe<Scalars['String']['output']>;
   /** The username of the user. It is unique and tied with user's profile URL. Example - https://hashnode.com/@username */
   username: Scalars['String']['output'];
 };
@@ -1167,6 +1190,8 @@ export type Post = Node & {
   series?: Maybe<Series>;
   /** The slug of the post. Used as address of the post on blog. Example - https://johndoe.com/my-post-slug */
   slug: Scalars['String']['output'];
+  /** Boolean flag to identify whether or not the post is sourced from GitHub. */
+  sourcedFromGithub: Scalars['Boolean']['output'];
   /** The subtitle of the post. Subtitle is a short description of the post which is also used in SEO if meta tags are not provided. */
   subtitle?: Maybe<Scalars['String']['output']>;
   /** Returns list of tags added to the post. Contains tag id, name, slug, etc. */
@@ -1410,6 +1435,8 @@ export type Publication = Node & {
   __typename?: 'Publication';
   /** The about section of the publication. */
   about?: Maybe<Content>;
+  /** Boolean flag indicating if the publication allows edits by contributors */
+  allowContributorEdits: Scalars['Boolean']['output'];
   /** The author who owns the publication. */
   author: User;
   /** The canonical URL of the publication. */
@@ -1651,6 +1678,8 @@ export type PublicationIntegrations = {
   matomoURL?: Maybe<Scalars['String']['output']>;
   /** A flag indicating if the custom domain is enabled for integration with Plausible Analytics. */
   plausibleAnalyticsEnabled?: Maybe<Scalars['Boolean']['output']>;
+  /** The share ID for the Hashnode-provided Umami analytics instance. */
+  umamiShareId?: Maybe<Scalars['String']['output']>;
   /** The ID for the Hashnode-provided Umami analytics instance. */
   umamiWebsiteUUID?: Maybe<Scalars['String']['output']>;
   /** Web Monetization Payment Pointer for integration with Web Monetization. */
@@ -1702,7 +1731,10 @@ export type PublicationNavbarItem = {
   label?: Maybe<Scalars['String']['output']>;
   /** The static page added to the navbar item. */
   page?: Maybe<StaticPage>;
-  /** The order of the navbar item. */
+  /**
+   * The order of the navbar item.
+   * @deprecated Navbar items are already returned in the correct order. Priority value is not needed and might be 0 in most cases.
+   */
   priority?: Maybe<Scalars['Int']['output']>;
   /** The series added to the navbar item. */
   series?: Maybe<Series>;
@@ -1742,6 +1774,8 @@ export type PublicationPostConnection = Connection & {
  * Returns a list of edges which contains the posts in publication and cursor to the last item of the previous page.
  */
 export type PublicationPostConnectionFilter = {
+  /** Only return posts that are deleted. Query returns active posts by default, set this to true to return deleted posts. */
+  deletedOnly?: InputMaybe<Scalars['Boolean']['input']>;
   /** Remove pinned post from the result set. */
   excludePinnedPost?: InputMaybe<Scalars['Boolean']['input']>;
   /**
@@ -1828,8 +1862,11 @@ export type PublishPostInput = {
   slug?: InputMaybe<Scalars['String']['input']>;
   /** The subtitle of the post. */
   subtitle?: InputMaybe<Scalars['String']['input']>;
-  /** A list of tags added to the post. */
-  tags: Array<PublishPostTagInput>;
+  /**
+   * A list of tags to add to the post. You can get a list of popular tags available on Hashnode here.
+   * https://github.com/Hashnode/support/blob/main/misc/tags.json
+   */
+  tags?: InputMaybe<Array<PublishPostTagInput>>;
   /** The title of the post. */
   title: Scalars['String']['input'];
 };
@@ -2092,6 +2129,15 @@ export type ResendWebhookRequestPayload = {
   webhookMessage?: Maybe<WebhookMessage>;
 };
 
+export type RestorePostInput = {
+  id: Scalars['ID']['input'];
+};
+
+export type RestorePostPayload = {
+  __typename?: 'RestorePostPayload';
+  post?: Maybe<Post>;
+};
+
 /** Information to help in seo related meta tags. */
 export type Seo = {
   __typename?: 'SEO';
@@ -2145,6 +2191,7 @@ export enum Scope {
   CreatePro = 'create_pro',
   ImportSubscribersToPublication = 'import_subscribers_to_publication',
   PublicationAdmin = 'publication_admin',
+  PublicationMember = 'publication_member',
   PublishComment = 'publish_comment',
   PublishDraft = 'publish_draft',
   PublishPost = 'publish_post',
@@ -2152,14 +2199,18 @@ export enum Scope {
   RecommendPublications = 'recommend_publications',
   RemoveComment = 'remove_comment',
   RemoveReply = 'remove_reply',
+  RestorePost = 'restore_post',
   Signup = 'signup',
   TeamHashnode = 'team_hashnode',
   UpdateComment = 'update_comment',
   UpdatePost = 'update_post',
   UpdateReply = 'update_reply',
   WebhookAdmin = 'webhook_admin',
+  WriteDraft = 'write_draft',
   WritePost = 'write_post',
-  WriteSeries = 'write_series'
+  WriteSeries = 'write_series',
+  WriteStaticPage = 'write_static_page',
+  WriteWidget = 'write_widget'
 }
 
 /**
@@ -2176,6 +2227,8 @@ export type SearchPostConnection = Connection & {
 };
 
 export type SearchPostsOfPublicationFilter = {
+  /** Only return posts that are deleted. Query returns active posts by default, set this to true to return deleted posts. */
+  deletedOnly?: InputMaybe<Scalars['Boolean']['input']>;
   /** The ID of publications to search from. */
   publicationId: Scalars['ObjectId']['input'];
   /** The query to be searched in post. */
