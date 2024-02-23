@@ -354,6 +354,8 @@ type Draft implements Node {
   """
   ogMetaData: OpenGraphMetaData
   readTimeInMinutes: Int!
+  """The date the draft is scheduled to be published."""
+  scheduledDate: DateTime
   """
   SEO information of the draft. Contains title and description used in meta tags.
   """
@@ -743,6 +745,8 @@ type Mutation {
   """Reschedule a draft."""
   rescheduleDraft(input: RescheduleDraftInput!): RescheduleDraftPayload!
   resendWebhookRequest(input: ResendWebhookRequestInput!): ResendWebhookRequestPayload!
+  """Restores a deleted post."""
+  restorePost(input: RestorePostInput!): RestorePostPayload!
   scheduleDraft(
     """Information about the draft to be published."""
     input: ScheduleDraftInput!
@@ -1116,6 +1120,10 @@ type Post implements Node {
   """
   slug: String!
   """
+  Boolean flag to identify whether or not the post is sourced from GitHub.
+  """
+  sourcedFromGithub: Boolean!
+  """
   The subtitle of the post. Subtitle is a short description of the post which is also used in SEO if meta tags are not provided.
   """
   subtitle: String
@@ -1343,6 +1351,10 @@ A publication is a blog that can be created for a user or a team.
 type Publication implements Node {
   """The about section of the publication."""
   about: Content
+  """
+  Boolean flag indicating if the publication allows edits by contributors
+  """
+  allowContributorEdits: Boolean!
   """The author who owns the publication."""
   author: User!
   """The canonical URL of the publication."""
@@ -1550,6 +1562,8 @@ type PublicationIntegrations {
   A flag indicating if the custom domain is enabled for integration with Plausible Analytics.
   """
   plausibleAnalyticsEnabled: Boolean
+  """The share ID for the Hashnode-provided Umami analytics instance."""
+  umamiShareId: String
   """The ID for the Hashnode-provided Umami analytics instance."""
   umamiWebsiteUUID: String
   """
@@ -1602,7 +1616,7 @@ type PublicationNavbarItem {
   """The static page added to the navbar item."""
   page: StaticPage
   """The order of the navbar item."""
-  priority: Int
+  priority: Int @deprecated(reason: "Navbar items are already returned in the correct order. Priority value is not needed and might be 0 in most cases.")
   """The series added to the navbar item."""
   series: Series
   """The type of the navbar item, can be series, link or page."""
@@ -1640,6 +1654,10 @@ Connection to get list of posts in publications.
 Returns a list of edges which contains the posts in publication and cursor to the last item of the previous page.
 """
 input PublicationPostConnectionFilter {
+  """
+  Only return posts that are deleted. Query returns active posts by default, set this to true to return deleted posts.
+  """
+  deletedOnly: Boolean
   """Remove pinned post from the result set."""
   excludePinnedPost: Boolean
   """
@@ -1729,8 +1747,11 @@ input PublishPostInput {
   slug: String
   """The subtitle of the post."""
   subtitle: String
-  """A list of tags added to the post."""
-  tags: [PublishPostTagInput!]!
+  """
+  A list of tags to add to the post. You can get a list of popular tags available on Hashnode here.
+  https://github.com/Hashnode/support/blob/main/misc/tags.json
+  """
+  tags: [PublishPostTagInput!]
   """The title of the post."""
   title: String!
 }
@@ -1979,6 +2000,14 @@ type ResendWebhookRequestPayload {
   webhookMessage: WebhookMessage
 }
 
+input RestorePostInput {
+  id: ID!
+}
+
+type RestorePostPayload {
+  post: Post
+}
+
 """Information to help in seo related meta tags."""
 type SEO {
   """The description used in og:description tag for SEO purposes."""
@@ -2043,6 +2072,7 @@ enum Scope {
   recommend_publications
   remove_comment
   remove_reply
+  restore_post
   signup
   team_hashnode
   update_comment
@@ -2053,6 +2083,7 @@ enum Scope {
   write_post
   write_series
   write_static_page
+  write_widget
 }
 
 """
@@ -2068,6 +2099,10 @@ type SearchPostConnection implements Connection {
 }
 
 input SearchPostsOfPublicationFilter {
+  """
+  Only return posts that are deleted. Query returns active posts by default, set this to true to return deleted posts.
+  """
+  deletedOnly: Boolean
   """The ID of publications to search from."""
   publicationId: ObjectId!
   """The query to be searched in post."""
