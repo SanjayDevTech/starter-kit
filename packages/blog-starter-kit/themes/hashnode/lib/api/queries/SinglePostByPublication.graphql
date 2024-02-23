@@ -46,6 +46,7 @@ fragment PostFull on Post {
 	series {
 		id
 	}
+	canonicalUrl
 	url
 	brief
 	title
