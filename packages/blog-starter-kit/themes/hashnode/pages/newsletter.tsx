@@ -13,18 +13,16 @@ import {
 import { createHeaders, createSSRExchange, getUrqlClientConfig } from '../lib/api/client';
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { log as _log } from 'next-axiom';
-import { initUrqlClient } from 'next-urql';
+import { WithUrqlProps, initUrqlClient } from 'next-urql';
 import { Header } from '../components/header';
 import PublicationFooter from '../components/publication-footer';
+import { Layout } from '../components/layout';
+import Head from 'next/head';
 
-type Props = {
-  publication: PublicationFragment;
-  recent3Posts: PostThumbnailFragment[];
-  currentMenuId: string;
-}
-
-const Newsletter = (props: Props) => {
-  const { recent3Posts, publication, currentMenuId } = props;
+function Newsletter(
+	props: InferGetServerSidePropsType<typeof getServerSideProps> & Required<WithUrqlProps>,
+) {
+  const { recent3Posts, publication, currentMenuId, title } = props;
 
   const profile = publication.author;
 
@@ -40,49 +38,76 @@ const Newsletter = (props: Props) => {
 
   return (
     <AppProvider publication={publication}>
-      <Header currentMenuId={currentMenuId} isHome={false}/>
-      <div className="blog-page-area mx-auto min-h-screen px-4 pb-8 pt-20 md:px-10 md:pt-20">
-        <div className="blog-page-card container relative z-30 mx-auto grid grid-flow-row grid-cols-8 pb-0 2xl:grid-cols-10">
-          <div className="col-span-full">
-            <span className="mx-auto -mb-10 block h-32 w-32 overflow-hidden rounded-full">
-              <CustomImage
-                originalSrc={originalImageSrc}
-                src={publicationImageUrl}
-                alt={publication.title || profile?.name}
-                className="block w-full"
-                width={400}
-                height={400}
-                priority
-                layout="responsive"
-              />
-            </span>
-            <PublicationSubscribeStandOut />
+      <Layout>
+        <Head>
+        <title>{title}</title>
+					<meta
+						name="description"
+						content={`Subscribe to ${publication.author.name} Newsletter`}
+					></meta>
+					<meta
+						property="og:site_name"
+						content={`${publication.displayTitle || publication.author.name}`}
+					></meta>
+					<meta property="og:type" content="website"></meta>
+					<meta property="og:url" content={`${publication.url}/newsletter`}></meta>
+					{/* <meta name="image" property="og:image" content=""></meta> */}
+					{/* <meta name="theme-color" content="#000000"></meta> */}
+					<meta property="twitter:card" content="summary_large_image"></meta>
+					<meta
+						property="twitter:title"
+						content={title}
+					></meta>
+					<meta
+						property="twitter:description"
+						content={`Subscribe to ${publication.author.name} Newsletter`}
+					></meta>
+					{/* <meta property="twitter:image" content=""></meta> */}
+        </Head>
+        <Header currentMenuId={currentMenuId} isHome={false} />
+        <div className="blog-page-area mx-auto min-h-screen px-4 pb-8 pt-20 md:px-10 md:pt-20">
+          <div className="blog-page-card container relative z-30 mx-auto grid grid-flow-row grid-cols-8 pb-0 2xl:grid-cols-10">
+            <div className="col-span-full">
+              <span className="mx-auto -mb-10 block h-32 w-32 overflow-hidden rounded-full">
+                <CustomImage
+                  originalSrc={originalImageSrc}
+                  src={publicationImageUrl}
+                  alt={publication.title || profile?.name}
+                  className="block w-full"
+                  width={400}
+                  height={400}
+                  priority
+                  layout="responsive"
+                />
+              </span>
+              <PublicationSubscribeStandOut />
+            </div>
           </div>
+          {recent3Posts && recent3Posts.length > 0 && (
+            <>
+              <div className="blog-more-articles mt-10">
+                <h3 className="mb-3 text-center font-heading text-xl font-bold text-slate-900 dark:text-slate-50">
+                  Recent articles
+                </h3>
+              </div>
+              <div className="blog-articles-container container mx-auto grid grid-cols-1 gap-10 px-4 md:grid-cols-2 lg:grid-cols-3 xl:px-10 xl:py-10 2xl:px-24 2xl:py-5">
+                {recentPosts}
+              </div>
+            </>
+          )}
         </div>
-        {recent3Posts && recent3Posts.length > 0 && (
-          <>
-            <div className="blog-more-articles mt-10">
-              <h3 className="mb-3 text-center font-heading text-xl font-bold text-slate-900 dark:text-slate-50">
-                Recent articles
-              </h3>
-            </div>
-            <div className="blog-articles-container container mx-auto grid grid-cols-1 gap-10 px-4 md:grid-cols-2 lg:grid-cols-3 xl:px-10 xl:py-10 2xl:px-24 2xl:py-5">
-              {recentPosts}
-            </div>
-          </>
-        )}
-      </div>
-      {publication ? (
-				<PublicationFooter
-					authorName={publication.author.name}
-					title={publication.title}
-					imprint={publication.imprint}
-					disableFooterBranding={publication.preferences.disableFooterBranding}
-					isTeam={publication.isTeam}
-					logo={publication.preferences.logo}
-					darkMode={publication.preferences.darkMode}
-				/>
-				) : null}
+        {publication ? (
+          <PublicationFooter
+            authorName={publication.author.name}
+            title={publication.title}
+            imprint={publication.imprint}
+            disableFooterBranding={publication.preferences.disableFooterBranding}
+            isTeam={publication.isTeam}
+            logo={publication.preferences.logo}
+            darkMode={publication.preferences.darkMode}
+          />
+        ) : null}
+      </Layout>
     </AppProvider>
   );
 };
@@ -90,6 +115,7 @@ const Newsletter = (props: Props) => {
 export const getServerSideProps: GetServerSideProps<{
   publication: PublicationFragment;
   recent3Posts: PostThumbnailFragment[];
+  title: string;
 }> = async (ctx) => {
   const { req, res, query } = ctx;
   const host = process.env.NEXT_PUBLIC_HASHNODE_PUBLICATION_HOST;
@@ -153,6 +179,7 @@ export const getServerSideProps: GetServerSideProps<{
     props: {
       publication,
       recent3Posts: publication.recentPosts.edges.map((edge) => edge.node),
+      title: `Newsletter | ${publication.displayTitle || publication.title}`,
       currentMenuId: 'newsletter'
     },
   };
