@@ -27,6 +27,7 @@ import {
 	SlugPostsByPublicationDocument,
 	StaticPageFragment,
 } from '../generated/graphql';
+import AutoAds from '../components/auto-ads';
 
 type PostProps = {
 	type: 'post';
@@ -82,6 +83,7 @@ const Post = ({ publication, post, morePosts }: PostProps) => {
 					}}
 				/>
 				<style dangerouslySetInnerHTML={{ __html: highlightJsMonokaiTheme }}></style>
+				<AutoAds />
 			</Head>
 			<PostHeader post={post} morePosts={morePosts} />
 		</>
