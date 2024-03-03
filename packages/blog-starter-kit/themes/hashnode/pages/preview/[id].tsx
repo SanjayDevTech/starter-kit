@@ -30,7 +30,7 @@ import { BookOpenSVG } from '../../components/icons/svgs';
 import getReadTime from '../../utils/getReadTime';
 import Autolinker from "../../utils/autolinker";
 import DraftFloatingMenu from '../../components/draft-floating-menu';
-import { markdownToHtml } from 'hashnode-utils/renderer/markdownToHtml';
+import { markdownToHtml } from '@starter-kit/utils/renderer/markdownToHtml';
 import TocRenderDesign from '../../components/toc-render-design';
 
 type Props = {
