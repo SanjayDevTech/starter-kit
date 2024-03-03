@@ -1,7 +1,7 @@
 import React from 'react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-
-import { CheckSVG } from './icons/svgs/';
+import Link from 'next/link';
+import { CheckSVG } from './icons/svgs';
 import CustomScrollArea from './scroll-area';
 import { twJoin } from 'tailwind-merge';
 
@@ -24,7 +24,8 @@ function PublicationNavLinksDropdown(props: Props) {
               ? extraNavbarItems.map((navItem: any, index: number) => (
                   <React.Fragment key={`${navItem.label}-${index}`}>
                     <DropdownMenu.DropdownMenuItem asChild>
-                      <a
+                      {/* [LINK] */}
+                      <Link
                         href={navItem.url}
                         className={twJoin(
                           navItem.isActive ? 'blog-nav-more-item-active' : 'blog-nav-more-item',
@@ -36,7 +37,7 @@ function PublicationNavLinksDropdown(props: Props) {
                         {navItem.isActive ? (
                           <CheckSVG className="h-5 w-5 fill-current text-blue-600 dark:text-white" />
                         ) : null}
-                      </a>
+                      </Link>
                     </DropdownMenu.DropdownMenuItem>
                     {index !== extraNavbarItems.length - 1 ? (
                       <hr className="h-px w-full border-none bg-slate-200 dark:bg-slate-700" />

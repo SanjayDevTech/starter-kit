@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import React from 'react';
 import { twJoin } from 'tailwind-merge';
 
@@ -12,7 +13,8 @@ function PublicationSocialLinkItem(props: Props) {
   const { href, labelText, children, isSidebar } = props;
 
   return (
-    <a
+    // [LINK]
+    <Link
       href={href}
       aria-label={labelText}
       target="_blank"
@@ -28,7 +30,7 @@ function PublicationSocialLinkItem(props: Props) {
       )}
     >
       {children}
-    </a>
+    </Link>
   );
 }
 

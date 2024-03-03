@@ -2,7 +2,7 @@ import request from 'graphql-request';
 import ErrorPage from 'next/error';
 import Head from 'next/head';
 import moment from 'dayjs';
-
+import Link from 'next/link';
 import { Container } from '../../components/container';
 import { AppProvider } from '../../components/contexts/appContext';
 import PostPageNavbar from '../../components/post-page-navbar';
@@ -30,7 +30,7 @@ import { BookOpenSVG } from '../../components/icons/svgs';
 import getReadTime from '../../utils/getReadTime';
 import Autolinker from "../../utils/autolinker";
 import DraftFloatingMenu from '../../components/draft-floating-menu';
-import { markdownToHtml } from '@starter-kit/utils/renderer/markdownToHtml';
+import { markdownToHtml } from 'hashnode-utils/renderer/markdownToHtml';
 import TocRenderDesign from '../../components/toc-render-design';
 
 type Props = {
@@ -196,13 +196,14 @@ export default function Post({ publication, draft }: Props) {
 									{allTags.length > 0 && (
 										<div className="mb-5 flex w-full flex-row flex-wrap justify-center md:mb-0">
 										{allTags.map((tag: any) => (
-											<a
+											// [LINK]
+											<Link
 											className="mb-2 mr-3 rounded-lg border bg-slate-100 px-2 py-1 text-base font-medium text-slate-700 hover:bg-slate-200 dark:border-slate-800 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700"
 											key={tag._id?.toString()}
 											href={`/tag/${tag.slug}`}
 											>
 											<span>{tag.name}</span>
-											</a>
+											</Link>
 										))}
 										</div>
 									)}

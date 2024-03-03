@@ -47,6 +47,7 @@ const CustomLogo = ({
 
   return (
     <h1 className="blog-main-logo">
+      {/* [LINK] */}
       <Link
         className={twJoin(
           'blog-logo focus-ring-base flex flex-row items-center','focus-ring-colors-base',

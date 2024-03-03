@@ -11,6 +11,8 @@ import { getBlurHash, kFormatter, resizeImage } from '../utils/image';
 
 import { Post, PostThumbnailFragment, RequiredPublicationFieldsFragment } from '../generated/graphql';
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? '';
+
 const FeaturedPosts = (props: {
   posts: Array<PostThumbnailFragment>;
   publication: Pick<RequiredPublicationFieldsFragment, 'id' | 'features'> & {
@@ -26,7 +28,7 @@ const FeaturedPosts = (props: {
     if (nextData) {
       const { buildId } = JSON.parse(nextData.innerHTML);
       if (buildId) {
-        fetch(`/_next/data/${buildId}/${slug}.json?slug=${slug}`);
+        fetch(`${BASE_URL}/_next/data/${buildId}/${slug}.json?slug=${slug}`);
       }
     }
   };

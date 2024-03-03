@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { forwardRef } from 'react';
 
 type Props = {
@@ -40,8 +41,9 @@ export const Button = forwardRef<HTMLButtonElement, Props>(
 
 		if (as === 'a') {
 			return (
-				<a
-					href={href}
+				// [LINK]
+				<Link
+					href={href ?? "#"}
 					rel={rel}
 					target={target}
 					className={`flex flex-row items-center justify-start gap-2 rounded-full border px-2 py-2 text-sm font-semibold transition-colors duration-200 md:px-5 md:py-3 md:text-base ${buttonClassName} ${
@@ -53,7 +55,7 @@ export const Button = forwardRef<HTMLButtonElement, Props>(
 						{label || null}
 					</div>
 					{secondaryIcon && <div className="shrink-0">{secondaryIcon}</div>}
-				</a>
+				</Link>
 			);
 		}
 

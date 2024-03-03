@@ -563,9 +563,9 @@ enum FeedType {
 }
 
 enum HttpRedirectionType {
-  """A permanent redirect that corresponds to the 308 HTTP status code."""
+  """A permanent redirect that corresponds to the 302 HTTP status code."""
   PERMANENT
-  """A temporary redirect that corresponds to the 307 HTTP status code."""
+  """A temporary redirect that corresponds to the 301 HTTP status code."""
   TEMPORARY
 }
 
@@ -1607,6 +1607,26 @@ type PublicationLinks {
   youtube: String
 }
 
+"""Contains the publication member information."""
+type PublicationMember implements Node {
+  """The ID of the publication member."""
+  id: ID!
+  """The role of the user in the publication."""
+  role: PublicationMemberRole!
+  """The user who is a member of the publication."""
+  user: User
+}
+
+"""The role of the user in the publication."""
+enum PublicationMemberRole {
+  """The user is an admin of the publication."""
+  ADMIN
+  """The user is a owner of the publication."""
+  AUTHOR
+  """The user is a member of the publication."""
+  CONTRIBUTOR
+}
+
 """Contains the publication's navbar items."""
 type PublicationNavbarItem {
   """The unique identifier of the navbar item."""
@@ -1906,9 +1926,10 @@ type RecommendedPublicationEdge implements Edge {
   node: Publication!
 }
 
-type RedirectionRule {
+type RedirectionRule implements Node {
   """The destination URL of the redirection rule."""
-  destination: String!
+  destination: URL!
+  id: ID!
   """The source URL of the redirection rule."""
   source: String!
   """The type of the redirection rule."""
@@ -2388,6 +2409,8 @@ input TriggerWebhookTestInput {
 type TriggerWebhookTestPayload {
   webhook: Webhook
 }
+
+scalar URL
 
 input UnsubscribeFromNewsletterInput {
   """The email that is currently subscribed."""

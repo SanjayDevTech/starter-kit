@@ -4,14 +4,15 @@ import Image from 'next/legacy/image';
 import { HashnodeLogoIconV2 } from './icons/svgs';
 import { resizeImage } from '../utils/image';
 import Link from 'next/link';
+import { PublicationFragment } from '../generated/graphql';
 
-// type PublicationFooterProps = Pick<Publication, 'title' | 'postsCount' | 'imprint' | 'isTeam'> &
-//   Pick<Publication['preferences'], 'disableFooterBranding' | 'logo' | 'darkMode'> & {
-//     authorName: string;
-//   }; // TODO: types need to be fixed
+type PublicationFooterProps = Pick<PublicationFragment, 'title' | 'imprint' | 'isTeam'> &
+  Pick<PublicationFragment['preferences'], 'disableFooterBranding' | 'logo' | 'darkMode'> & {
+    authorName: string;
+  }; // TODO: types need to be fixed
 
-function PublicationFooter(props: any) {
-  const { isTeam, authorName, title, imprint, disableFooterBranding, logo } = props;
+function PublicationFooter(props: PublicationFooterProps) {
+  const { isTeam, authorName, title, imprint, disableFooterBranding, logo, darkMode } = props;
 
   return (
     <footer className="blog-footer-area -mt-px border-t bg-slate-100 px-5 py-10 text-center text-slate-800 dark:border-slate-800 dark:bg-black dark:text-slate-500 md:px-10 md:py-12 lg:py-20">

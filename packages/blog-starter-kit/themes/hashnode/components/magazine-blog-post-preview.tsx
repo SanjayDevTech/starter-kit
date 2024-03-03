@@ -8,6 +8,8 @@ import { getBlurHash, resizeImage } from '../utils/image';
 import { kFormatter } from '../utils/image';
 import { PostThumbnailFragment, RequiredPublicationFieldsFragment } from '../generated/graphql';
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL ?? '';
+
 function BlogPostPreview(props: {
   post: PostThumbnailFragment;
   publication: Pick<RequiredPublicationFieldsFragment, 'features'>;
@@ -21,7 +23,7 @@ function BlogPostPreview(props: {
     if (nextData) {
       const { buildId } = JSON.parse(nextData.innerHTML);
       if (buildId) {
-        fetch(`/_next/data/${buildId}/${post.slug}.json?slug=${post.slug}`);
+        fetch(`${BASE_URL}/_next/data/${buildId}/${post.slug}.json?slug=${post.slug}`);
       }
     }
   };

@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import { twJoin, twMerge } from 'tailwind-merge';
 
 type ButtonProps = {
@@ -83,9 +84,10 @@ const Index = React.forwardRef((props: ButtonAtomProps, ref: React.Ref<any>) => 
   if (as === 'a') {
     delete restOfTheProps.type;
     return (
-      <a
+      // [LINK]
+      <Link
         ref={ref}
-        href={href}
+        href={href ?? '#'}
         className={twMerge(
           styles.default,
           active && styles.active,
@@ -97,7 +99,7 @@ const Index = React.forwardRef((props: ButtonAtomProps, ref: React.Ref<any>) => 
         {...restOfTheProps}
       >
         {children}
-      </a>
+      </Link>
     );
   }
 
