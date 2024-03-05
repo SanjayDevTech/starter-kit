@@ -239,6 +239,92 @@ input CoverImageOptionsInput {
   stickCoverToBottom: Boolean
 }
 
+input CreateDraftInput {
+  """Ids of the co-authors of the resulting draft."""
+  coAuthors: [ObjectId!]
+  """Content of the resulting draft in markdown format."""
+  contentMarkdown: String
+  """Options for the cover image of the resulting draft."""
+  coverImageOptions: CoverImageOptionsInput
+  """
+  A flag to indicate if the comments are disabled for the resulting draft.
+  """
+  disableComments: Boolean
+  """
+  Information about the meta tags added to the resulting draft, used for SEO purpose.
+  """
+  metaTags: MetaTagsInput
+  """
+  The URL of the original article if the draft is imported from an external source.
+  """
+  originalArticleURL: String
+  """The ID of publication the draft and resulting post belongs to."""
+  publicationId: ID!
+  """
+  Publish the draft on behalf of another user who is a member of the publication.
+  
+  Only applicable for team publications.
+  """
+  publishAs: ObjectId
+  """Date when the resulting draft is published."""
+  publishedAt: DateTime
+  """Providing a seriesId will add the resulting draft to that series."""
+  seriesId: ObjectId
+  """
+  Settings for the resulting draft like table of contents and newsletter activation.
+  """
+  settings: CreateDraftSettingsInput
+  """Slug of the resulting draft."""
+  slug: String
+  """The subtitle of the resulting draft."""
+  subtitle: String
+  """A list of tags added to the resulting draft."""
+  tags: [CreateDraftTagInput!]
+  """The title of the resulting draft."""
+  title: String
+}
+
+type CreateDraftPayload {
+  """The newly created draft"""
+  draft: Draft
+}
+
+input CreateDraftSettingsInput {
+  """Wether to send a newsletter for the resulting draft's post."""
+  activateNewsletter: Boolean
+  """
+  A flag to indicate if the resulting draft should be delisted, used to hide the post created from the draft from public feed.
+  """
+  delist: Boolean
+  """
+  A flag to indicate if the resulting draft'S post should contain a table of content
+  """
+  enableTableOfContent: Boolean
+  """Flag to indicate if the slug is overridden by the user."""
+  slugOverridden: Boolean
+}
+
+input CreateDraftTagInput {
+  """
+  A tag id that is referencing an existing tag.
+  
+  Either this or name and slug should be provided. If both are provided, the id will be used.
+  """
+  id: ObjectId
+  """
+  A name of a new tag to create.
+  
+  Either this and slug or id should be provided. If both are provided, the id will be used.
+  """
+  name: String
+  """
+  A slug of a new tag to create.
+  
+  Either this and name or id should be provided. If both are provided, the id will be used.
+  """
+  slug: String
+}
+
 input CreateWebhookInput {
   events: [WebhookEvent!]!
   publicationId: ID!
@@ -718,6 +804,11 @@ type Mutation {
   """Adds a reply to a comment."""
   addReply(input: AddReplyInput!): AddReplyPayload!
   cancelScheduledDraft(input: CancelScheduledDraftInput!): CancelScheduledDraftPayload!
+  """Creates a new draft for a post."""
+  createDraft(
+    """Information about the draft to be created."""
+    input: CreateDraftInput!
+  ): CreateDraftPayload!
   createWebhook(input: CreateWebhookInput!): CreateWebhookPayload!
   deleteWebhook(id: ID!): DeleteWebhookPayload!
   """Likes a comment."""

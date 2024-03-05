@@ -60,6 +60,7 @@ export function Integrations() {
   `;
 
 	useEffect(() => {
+		if (!window.gtag) return;
 		// @ts-ignore
 		window.gtag('config', gaTrackingID, {
 			transport_url: 'https://ping.hashnode.com',
