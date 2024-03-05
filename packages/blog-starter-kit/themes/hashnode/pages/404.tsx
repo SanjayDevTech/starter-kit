@@ -15,7 +15,7 @@ export default function NotFound() {
                 <img src="/assets/astronaut.svg" alt="404" className="--not-found-image" />
                 <h1 className="--not-found-title">404 Page not found</h1>
                 <h2 className="--not-found-description">
-                    The page you are looking for doesn't exist
+                    The page you are looking for doesn&apos;t exist
                 </h2>
                 <Link href="/" className="--not-found-home-btn">
                     Go to Home
