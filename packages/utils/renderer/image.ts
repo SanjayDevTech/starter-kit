@@ -2,7 +2,7 @@ const { DEFAULT_AVATAR } = require('./consts/images');
 
 const DEFAULT_PHOTO = `${DEFAULT_AVATAR},format&format=webp`;
 
-const _resizeImage = (src, resize, defaultImage) => {
+const _resizeImage = (src, resize, defaultImage = undefined) => {
 	if (!src) {
 		return defaultImage;
 	} else {
