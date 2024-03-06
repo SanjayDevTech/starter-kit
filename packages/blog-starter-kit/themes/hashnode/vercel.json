@@ -1,7 +1,6 @@
 {
     "redirects": [
-        { "source": "/robots.txt", "destination": "https://sanjaydev.tech/robots.txt", "statusCode": 301 },
-        { "source": "/:path((?!blog/).*)", "destination": "https://sanjaydev.tech/blog/:path*", "statusCode": 301 }
+        { "source": "/robots.txt", "destination": "https://sanjaydev.tech/robots.txt", "statusCode": 301 }
     ],
     "framework": "nextjs"
 }
