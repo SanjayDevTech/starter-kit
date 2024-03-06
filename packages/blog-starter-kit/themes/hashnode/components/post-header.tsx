@@ -82,7 +82,6 @@ export const PostHeader = ({ post, morePosts }: Props) => {
 	const [, setMobMount] = useState(false);
 	const [canLoadEmbeds, setCanLoadEmbeds] = useState(false);
 	useEmbeds({ enabled: canLoadEmbeds });
-	const absolutePostURL = createPostUrl(post, post.publication);
 	if (post.hasLatexInPost) {
 		setTimeout(() => {
 			handleMathJax(true);
@@ -218,7 +217,7 @@ export const PostHeader = ({ post, morePosts }: Props) => {
 						<div className="mb-5 flex w-full flex-row items-center justify-center md:mb-0 md:w-auto md:justify-start">
 							<span className="mx-3 hidden font-bold text-slate-500 md:block">&middot;</span>
 							<Link
-								href={absolutePostURL}
+								href={post.url}
 								className="tooltip-handle text-slate-700 dark:text-slate-400"
 								data-title={`${moment(post.publishedAt).format('MMM D, YYYY HH:mm')}`}
 							>
