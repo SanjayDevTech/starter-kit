@@ -55,8 +55,9 @@ const Post = ({ publication, post, morePosts }: PostProps) => {
 		<>
 			<Head>
 				<title>{post.seo?.title || post.title}</title>
+				<AutoAds />
 				<link rel="canonical" href={post.canonicalUrl || post.url} />
-				<meta name="description" content={post.seo?.description || post.subtitle || post.brief} />
+				<meta name="description" content={seoDescription} />
 				<meta property="twitter:card" content="summary_large_image" />
 				<meta property="twitter:title" content={seoTitle} />
 				<meta property="twitter:description" content={seoDescription} />
@@ -72,7 +73,6 @@ const Post = ({ publication, post, morePosts }: PostProps) => {
 					}}
 				/>
 				<style dangerouslySetInnerHTML={{ __html: highlightJsMonokaiTheme }}></style>
-				<AutoAds />
 			</Head>
 			<PostHeader post={post} morePosts={morePosts} />
 		</>

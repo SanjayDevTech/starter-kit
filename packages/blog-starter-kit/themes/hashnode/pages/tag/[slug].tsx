@@ -18,8 +18,6 @@ import { createHeaders, createSSRExchange, getUrqlClientConfig } from '../../lib
 import PublicationPosts from '../../components/publication-posts';
 import PublicationFooter from '../../components/publication-footer';
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || '';
-
 const INITIAL_LIMIT = 6;
 
 type Props = {
@@ -59,7 +57,7 @@ export default function Post({ publication, posts, tag, slug, currentMenuId }: P
 					<meta property="twitter:description" content={seoDescription} />
 					<meta property="og:title" content={seoTitle} />
 					<meta property="og:type" content="website" />
-					<meta property="og:url" content={`${baseUrl}/tag/${tag.slug}`} />
+					<meta property="og:url" content={`${publication.url}/tag/${tag.slug}`} />
 				</Head>
 				<Header currentMenuId={currentMenuId} isHome={false} />
 				<div className={twJoin('blog-content-area feed-width', 'mx-auto md:w-2/3', !!publication.about?.html && 'mt-12')}>
