@@ -1,3 +1,6 @@
 {
+    "redirects": [
+        { "source": "/:path((?!blog/).*)", "destination": "https://sanjaydev.tech/:path*", "statusCode": 301 }
+    ],
     "framework": "nextjs"
 }
