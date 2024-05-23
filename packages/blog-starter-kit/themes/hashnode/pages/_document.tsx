@@ -1,4 +1,5 @@
 import { Head, Html, Main, NextScript } from 'next/document';
+import Script from "next/script";
 
 export default function Document() {
 	return (
@@ -8,6 +9,7 @@ export default function Document() {
 				<Main />
 				<NextScript />
 				<div id="hn-toast" />
+        <Script src="https://godly.sanjaydev.tech/latest.js"  />
 			</body>
 		</Html>
 	);
